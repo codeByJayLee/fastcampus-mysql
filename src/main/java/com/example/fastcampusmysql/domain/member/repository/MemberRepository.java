@@ -46,6 +46,12 @@ public class MemberRepository {
         Member nullableMember = DataAccessUtils.singleResult(members);
         return Optional.ofNullable(nullableMember);
     }
+
+    public List<Member> findAllByIdIn(List<Long> ids){
+        var sql = String.format("SELECT * FROM %s WHERE id in (:ids)", TABLE);
+        var params = new MapSqlParameterSource().addValue("ids", ids);
+        return namedParameterJdbcTemplate.query(sql, params, rowMapper);
+    }
     public Member save(Member member){
         /*
             member id를 보고 갱신 또는 삽입을 정함
